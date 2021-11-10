@@ -51,7 +51,7 @@ export default function Home() {
         }))
 
         console.log("nfts", items)
-        setNfts(items)
+        setNfts(items.reverse())
         setLoadingState('loaded')
     }
 
