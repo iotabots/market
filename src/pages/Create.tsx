@@ -5,11 +5,14 @@ import { ethers } from "ethers";
 import Button from '@mui/material/Button';
 import Input from '@mui/material/Input';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import Grid from '@mui/material/Grid';
 
 import { useState } from 'react'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
 
 import Web3Modal from 'web3modal'
+import { useNavigate } from "react-router-dom";
 
 
 import {
@@ -21,7 +24,10 @@ import Market from '../contracts/NFTMarket.json'
 
 export default function Games() {
     const client = ipfsHttpClient({ url: 'https://ipfs.infura.io:5001/api/v0' })
+    const navigate = useNavigate();
 
+    const [loading, setLoading] = useState(false)
+    const [loadingMessage, setLoadingMessage] = useState("")
     const [fileUrl, setFileUrl] = useState<null | string>(null)
     const [formInput, updateFormInput] = useState({ price: '', name: '', description: '' })
 
@@ -41,6 +47,8 @@ export default function Games() {
         }
     }
     async function createMarket() {
+        setLoadingMessage("create NFT...")
+        setLoading(true);
         const { name, description, price } = formInput
         if (!name || !description || !price || !fileUrl) return
         /* first, upload to IPFS */
@@ -62,7 +70,7 @@ export default function Games() {
         const connection = await web3Modal.connect()
         const provider = new ethers.providers.Web3Provider(connection)
         const signer = provider.getSigner()
-
+        
         /* next, create the item */
         let contract = new ethers.Contract(nftaddress, NFT.abi, signer)
         let transaction = await contract.createToken(url)
@@ -70,6 +78,7 @@ export default function Games() {
         let event = tx.events[0]
         let value = event.args[2]
         let tokenId = value.toNumber()
+        setLoadingMessage("create sale...")
 
         const price = ethers.utils.parseUnits(formInput.price, 'ether')
 
@@ -80,6 +89,9 @@ export default function Games() {
 
         transaction = await contract.createMarketItem(nftaddress, tokenId, price, { value: listingPrice })
         await transaction.wait()
+        setLoading(false);
+        navigate("/");
+
     }
 
     return (
@@ -100,67 +112,106 @@ export default function Games() {
                     {/* End hero unit */}
                 </Container>
                 <Container sx={{ py: 8 }} maxWidth="md">
-                <Typography
-                        component="p"
-                        variant="body1"
-                        align="center"
-                        color="#fff"
-                        gutterBottom
+                    <Grid
+                        container
+                        spacing={0}
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="center"
+                    // style={{ minHeight: '100vh' }}
                     >
-                        Mint your Community Bot as a NFT!
-                    </Typography>
-                    <br />
-                    <br />
-                    <Box
-                        component="form"
-                        sx={{
-                            '& > :not(style)': { m: 1, margin: '20px' },
-                        }}
-                        noValidate
-                        autoComplete="off"
-                    >
-                        <Input
-                            placeholder="Asset Name"
-                            className=""
-                            onChange={(e: any) => updateFormInput({ ...formInput, name: e.target.value })}
-                        />
-                        <Input
-                            placeholder="Asset Description"
-                            className=""
-                            onChange={(e: any) => updateFormInput({ ...formInput, description: e.target.value })}
-                        />
-                        <Input
-                            type="number"
-                            placeholder="Asset Price in MIOTA"
-                            className=""
-                            onChange={(e: any) => updateFormInput({ ...formInput, price: e.target.value })}
-                        />
-                        <Input
-                            type="file"
-                            name="Asset"
-                            className="my-4"
-                            onChange={onChange}
-                        />
-                        {
-                            fileUrl && (
-                                <img className="rounded mt-4" alt="upload" width="350" src={fileUrl} />
-                            )
-                        }
-                        <br />
-                        <br />
-                        <Button variant="contained" onClick={createMarket} className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg">
-                            Create NFT
-                        </Button>
-                        <Typography
-                        component="p"
-                        variant="body1"
-                        align="center"
-                        color="#fff"
-                        gutterBottom
-                    >
-                        You need to confirm twice on your Metamask Wallet.
-                    </Typography>
-                    </Box>
+                        <Grid item xs={8}>
+
+                            <Typography
+                                component="p"
+                                variant="body1"
+                                align="center"
+                                color="#fff"
+                                gutterBottom
+                            >
+                                Mint your own Community IOTABOTS!
+                            </Typography>
+                            <br />
+                            <br />
+                            <Box
+                                component="form"
+                                sx={{
+                                    '& > :not(style)': { m: 1, margin: '20px' },
+                                }}
+                                noValidate
+                                autoComplete="off"
+                            >
+                                <Input
+                                    disabled={loading}
+                                    placeholder="Bot Name"
+                                    className=""
+                                    onChange={(e: any) => updateFormInput({ ...formInput, name: e.target.value })}
+                                />
+                                <Input
+                                    disabled={loading}
+                                    placeholder="Bot Description"
+                                    className=""
+                                    onChange={(e: any) => updateFormInput({ ...formInput, description: e.target.value })}
+                                />
+                                <Input
+                                    disabled={loading}
+                                    type="number"
+                                    placeholder="Bot Price in MIOTA"
+                                    className=""
+                                    onChange={(e: any) => updateFormInput({ ...formInput, price: e.target.value })}
+                                />
+                                <Input
+                                    disabled={loading}
+                                    type="file"
+                                    name="Asset"
+                                    className="my-4"
+                                    onChange={onChange}
+                                />
+                                {
+                                    fileUrl && (
+                                        <img className="rounded mt-4" alt="upload" width="350" src={fileUrl} />
+                                    )
+                                }
+                                <br />
+                                <br />
+                                <Box
+                                    display="flex"
+                                    flexDirection="column"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                >
+                                    
+                                    { loading ? <CircularProgress color="primary" size="5em" /> : null }
+                                    
+                                    <Typography
+                                        component="p"
+                                        variant="body1"
+                                        align="center"
+                                        color="#fff"
+                                        gutterBottom
+                                    >
+                                    { loading ? loadingMessage : "" }                                    
+                                    </Typography>
+                                    <br />
+                                    <Button disabled={loading} variant="contained" onClick={createMarket} className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg">
+                                        Create NFT
+                                    </Button>
+                                    <br />
+                                    <br />
+                                    <Typography
+                                        component="p"
+                                        variant="body1"
+                                        align="center"
+                                        color="#fff"
+                                        gutterBottom
+                                    >
+                                        You need to confirm twice on your Metamask Wallet.
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        </Grid>
+                    </Grid>
+
                 </Container>
             </main>
         </>
