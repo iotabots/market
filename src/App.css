@@ -182,3 +182,11 @@
 .result_field {
   font-size: 1.5em !important;
 }
+
+.card-button {
+  width: 100%;
+  display:inline-block;
+  overflow: auto;
+  white-space: nowrap;
+  margin:0px auto;
+}

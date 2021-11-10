@@ -107,7 +107,7 @@ export default function Games() {
                         color="#fff"
                         gutterBottom
                     >
-                        IOTA COMMUNITY BOTS
+                        IOTABOTS COMMUNITY NFTs
                     </Typography>
                     {/* End hero unit */}
                 </Container>
@@ -129,7 +129,7 @@ export default function Games() {
                                 color="#fff"
                                 gutterBottom
                             >
-                                Mint your own Community IOTABOTS!
+                                Mint your own IOTABOTS Community NFT for free!
                             </Typography>
                             <br />
                             <br />
