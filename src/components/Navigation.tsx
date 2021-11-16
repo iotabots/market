@@ -103,6 +103,17 @@ export default function PrimarySearchAppBar() {
                             color: isActive ? "#02c692" : ""
                         };
                     }}
+                    to="/create">
+                    MyNFTs
+                </NavLink>
+            </MenuItem>
+            <MenuItem>
+                <NavLink
+                    style={({ isActive }) => {
+                        return {
+                            color: isActive ? "#02c692" : ""
+                        };
+                    }}
                     to="/profile">
                     Profile
                 </NavLink>
@@ -164,6 +175,20 @@ export default function PrimarySearchAppBar() {
                             }}
                             className="nav-link" to="/create">
                             Create NFT
+                        </NavLink>
+                    </Box>
+                    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                        |
+                    </Box>
+                    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                        <NavLink
+                            style={({ isActive }) => {
+                                return {
+                                    color: isActive ? "#02c692" : ""
+                                };
+                            }}
+                            className="nav-link" to="/MyNFTs">
+                            MyNFTs
                         </NavLink>
                     </Box>
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>

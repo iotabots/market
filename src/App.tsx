@@ -6,6 +6,7 @@ import Footer from './components/Footer'
 
 import Home from './pages/Home'
 import Create from './pages/Create'
+import MyNFTs from './pages/MyNFTs'
 import Profile from './pages/Profile'
 
 import './App.css';
@@ -47,6 +48,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="create" element={<Create />} />
+          <Route path="MyNFTs" element={<MyNFTs />} />
           <Route path="profile" element={<Profile />} />
         </Routes>
         <Footer />
